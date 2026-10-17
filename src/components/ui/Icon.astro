@@ -1,0 +1,38 @@
+---
+/**
+ * Inline SVG icon family: 20px grid, 1.5px stroke, currentColor.
+ * Authored in this repository; no icon font or third-party dependency.
+ *
+ * Path data lives in `./icon-paths` (shared with `IslandIcon.tsx`), injected
+ * with set:html, so there is no conditional markup to compile.
+ */
+import type { IconName } from './icon-names';
+import { ICON_PATHS } from './icon-paths';
+
+export type { IconName };
+
+interface Props {
+  name: IconName;
+  size?: number;
+  class?: string;
+  strokeWidth?: number;
+}
+
+const { name, size = 20, class: className = '', strokeWidth = 1.5 } = Astro.props;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width={size}
+  height={size}
+  viewBox="0 0 20 20"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={strokeWidth}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={className}
+  aria-hidden="true"
+  focusable="false"
+  set:html={ICON_PATHS[name]}
+/>

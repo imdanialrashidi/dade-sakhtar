@@ -1,0 +1,12 @@
+---
+import ListingLayout from '../../layouts/ListingLayout.astro';
+import { getEntriesByKind } from '../../lib/content';
+
+const entries = await getEntriesByKind('example');
+---
+
+<ListingLayout
+  title="مثال‌های حل‌شده"
+  description="مثال‌های حل‌شدهٔ مشتق، گام‌به‌گام: اول خودتان تلاش کنید، بعد راه‌حل را مرحله‌به‌مرحله ببینید. بهترین راه تثبیت فرمول‌ها."
+  entries={entries}
+/>

@@ -1,0 +1,305 @@
+import { describe, it, expect } from 'vitest';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import path from 'node:path';
+import { courseConfig } from '../../src/config/course';
+import { stripBaseWith } from '../../src/lib/url.ts';
+
+/**
+ * Deployment base-path regression guard.
+ *
+ * Astro prefixes the asset URLs it emits, but it does NOT rewrite `<a href>`
+ * strings written by hand. A site that builds green can therefore be entirely
+ * broken on a project-site deployment (GitHub Pages under /<repo>/) where every
+ * unprefixed link points outside the deployed directory.
+ *
+ * These checks read the actual built output rather than re-testing the helper,
+ * because the failure mode is "some link somewhere was written literally".
+ */
+
+const distDir = path.resolve(import.meta.dirname, '../../dist');
+
+/** Only meaningful after a build; skipped with a clear message otherwise. */
+const describeIfBuilt = existsSync(path.join(distDir, 'index.html')) ? describe : describe.skip;
+
+/**
+ * The deployment base, when built for a project site (GitHub Pages).
+ * Both link assertions need it: one resolves paths on disk, the other asserts
+ * that nothing escapes the base.
+ */
+const BASE = (process.env.BASE_PATH ?? '').replace(/\/$/, '');
+
+/**
+ * Strip the deployment base from a built href so it can be resolved on disk.
+ * Shared with the lib helper: the base comes from the build environment
+ * (`process.env.BASE_PATH`), never from a bare lib import (which reads the
+ * runner's own base under vitest).
+ */
+const stripBase = (href: string): string => stripBaseWith(BASE, href);
+
+function collectHtml(dir: string): string[] {
+  const out: string[] = [];
+  for (const item of readdirSync(dir)) {
+    const full = path.join(dir, item);
+    if (statSync(full).isDirectory()) out.push(...collectHtml(full));
+    else if (item.endsWith('.html')) out.push(full);
+  }
+  return out;
+}
+
+describeIfBuilt('built output', () => {
+  const htmlFiles = collectHtml(distDir);
+
+  it('produced HTML pages', () => {
+    expect(htmlFiles.length).toBeGreaterThan(0);
+  });
+
+  it('declares Persian RTL on every page', () => {
+    for (const file of htmlFiles) {
+      const html = readFileSync(file, 'utf8');
+      expect(html, file).toMatch(/<html[^>]*dir="rtl"/);
+      expect(html, file).toMatch(/<html[^>]*lang="fa"/);
+    }
+  });
+
+  it('emits exactly one <h1> per page', () => {
+    for (const file of htmlFiles) {
+      const html = readFileSync(file, 'utf8');
+      const count = (html.match(/<h1[\s>]/g) ?? []).length;
+      expect(count, `${file} has ${count} <h1> elements`).toBe(1);
+    }
+  });
+
+  it('never leaks an unrendered TeX command into page text', () => {
+    // KaTeX embeds the source in <annotation>, so only visible text matters.
+    for (const file of htmlFiles) {
+      const html = readFileSync(file, 'utf8');
+      const stripped = html.replace(/<annotation[\s\S]*?<\/annotation>/g, '').replace(/<[^>]+>/g, ' ');
+      expect(stripped, file).not.toMatch(/(^|[^\\a-zA-Z])(frac|sqrt|cdot|infty|partial)(?![a-zA-Z])/);
+    }
+  });
+
+  it('renders KaTeX markup rather than shipping a KaTeX runtime', () => {
+    const html = readFileSync(path.join(distDir, 'lessons/01-intro-to-calculus/index.html'), 'utf8');
+    expect(html).toContain('class="katex');
+    expect(html).toContain('mfrac');
+  });
+
+  it('references creator identity consistently', () => {
+    for (const file of htmlFiles) {
+      const html = readFileSync(file, 'utf8');
+      expect(html, file).toContain('imdanialrashidi.github.io');
+      expect(html, file).toContain('t.me/imdanialrashidi');
+    }
+  });
+
+  it('points the Telegram popup and announcements at the projects channel', () => {
+    // Accepted announcements channel for new projects/study websites
+    // (TELEGRAM_CHANNEL_URL in src/config/site.ts). The discovery popup
+    // ships on every page, so the channel URL must be present everywhere
+    // and must be the popup join target — not the personal contact URL
+    // asserted above.
+    const channel = 'https://t.me/danialrashidi_projects';
+    for (const file of htmlFiles) {
+      const html = readFileSync(file, 'utf8');
+      expect(html, `${file} never mentions the projects channel`).toContain(channel);
+      expect(html, `${file} popup join button is missing`).toContain('data-telegram-join');
+      expect(html, `${file} popup join does not target the channel`).toContain(`href="${channel}"`);
+    }
+  });
+
+  it('serves a favicon derived from the course logo', () => {
+    // A new topic reuses this template by changing `logo` in
+    // src/config/course.ts; the served favicon must follow that variable.
+    const monogram = courseConfig.logo?.monogram;
+    expect(monogram, 'course logo monogram is not configured').toBeTruthy();
+    const favicon = path.join(distDir, 'favicon.svg');
+    expect(existsSync(favicon), 'dist/favicon.svg missing').toBe(true);
+    const svg = readFileSync(favicon, 'utf8');
+    expect(svg, 'favicon does not carry the course monogram').toContain(monogram as string);
+  });
+
+  it('serves raster favicon fallbacks with valid dimensions', () => {
+    // SVG favicons cover modern browsers; the PNG fallback (legacy agents,
+    // search crawlers) and the Apple touch icon (iOS home screen) are
+    // generated from the live SVG by scripts/make-favicons.mjs.
+    for (const [file, size] of [['favicon-48.png', 48], ['apple-touch-icon.png', 180]] as const) {
+      const full = path.join(distDir, file);
+      expect(existsSync(full), `dist/${file} missing`).toBe(true);
+      const buf = readFileSync(full);
+      expect(buf.subarray(0, 8).toString('hex'), `${file} is not a PNG`).toBe('89504e470d0a1a0a');
+      const width = buf.readUInt32BE(16);
+      const height = buf.readUInt32BE(20);
+      expect([width, height], `${file} must be ${size}x${size}`).toEqual([size, size]);
+    }
+  });
+
+  it('links every favicon variant in the page head', () => {
+    for (const file of htmlFiles) {
+      const html = readFileSync(file, 'utf8');
+      expect(html, `${file} missing SVG icon link`).toMatch(/<link rel="icon"[^>]*type="image\/svg\+xml"/);
+      expect(html, `${file} missing PNG icon link`).toMatch(/<link rel="icon"[^>]*type="image\/png"[^>]*sizes="48x48"/);
+      expect(html, `${file} missing Apple touch icon link`).toMatch(/<link rel="apple-touch-icon"[^>]*>/);
+    }
+  });
+
+  it('contains no institutional branding', () => {
+    // The template must be usable for any subject and any learner. Rather than
+    // banning common Persian words (a legitimate disclaimer mentions "استاد"),
+    // this checks for signals that only institutional pages carry:
+    // staff/student identifiers and institutional domains or names.
+    const signals = [
+      /[^\s"']+@(?:[\w-]+\.)*(?:ac\.ir|edu\.ir|edu)\b/i, // institutional email
+      /شمارهٔ\s*دانشجویی|کد\s*پرسنلی|شمارهٔ\s*پرسنلی|دانشکده|گروه\s*آموزشی/, // staff/student ids
+      /دانشگاه\s+امیرکبیر|دانشگاه\s+تهران|دانشگاه\s+شریف|دانشگاه\s+فدرال/,
+    ];
+    for (const file of htmlFiles) {
+      const html = readFileSync(file, 'utf8');
+      for (const signal of signals) {
+        expect(html.match(signal), `${file} matched ${signal}`).toBeNull();
+      }
+    }
+  });
+  it('ships no server, API, or analytics runtime', () => {
+    for (const file of htmlFiles) {
+      const html = readFileSync(file, 'utf8');
+      expect(html, file).not.toMatch(/fetch\(['"`]https?:\/\/(?!t\.me|imdanialrashidi)/);
+      expect(html, file).not.toMatch(/googletagmanager|google-analytics|gtag\(/);
+    }
+  });
+
+  it('resolves every internal link to something on disk', () => {
+    const known = new Set(
+      htmlFiles.map((f) => '/' + path.relative(distDir, f).replace(/\\/g, '/').replace(/index\.html$/, '')),
+    );
+    for (const file of htmlFiles) {
+      const html = readFileSync(file, 'utf8');
+      for (const m of html.matchAll(/href="(\/[^"#?]*)"/g)) {
+        const raw = m[1];
+        const href = stripBase(raw);
+        if (href === '/' || known.has(href)) continue;
+        const clean = href.replace(/\/$/, '');
+        const found =
+          existsSync(path.join(distDir, clean)) ||
+          existsSync(path.join(distDir, clean, 'index.html')) ||
+          existsSync(path.join(distDir, `${clean}.html`));
+        expect(found, `${file} → ${raw}`).toBe(true);
+      }
+    }
+  });
+
+  it('prefixes every internal link with the deployment base', () => {
+    // Skipped for a root deployment, where there is no base to apply.
+    const base = BASE;
+    if (!base) return;
+
+    const allowed = new Set([`${base}/`]);
+    for (const file of htmlFiles) {
+      const html = readFileSync(file, 'utf8');
+      for (const m of html.matchAll(/href="(\/[^"#?]*)"/g)) {
+        const href = m[1];
+        if (allowed.has(href) || href.startsWith(`${base}/`)) continue;
+        // A link that escapes the deployment base is a 404 on GitHub Pages.
+        expect(href, `${file} → ${href} is missing the "${base}" base`).toMatch(/^\/(favicon\.svg|sitemap)/);
+      }
+    }
+  });
+  it('preloads the Arabic body and display font subsets on every page', () => {
+    // First-viewport text (H1 + body) paints in these two subsets; without
+    // preload the browser discovers them only after the stylesheet parses.
+    for (const file of htmlFiles) {
+      const html = readFileSync(file, 'utf8');
+      for (const subset of ['vazirmatn-arabic-wght-normal', 'estedad-arabic-wght-normal']) {
+        const tag = html.match(new RegExp(`<link[^>]*${subset}[^>]*>`))?.[0];
+        expect(tag, `${file} is missing a font preload for ${subset}`).toBeTruthy();
+        expect(tag, `${file} preload for ${subset} must declare as="font"`).toContain('as="font"');
+        expect(tag, `${file} preload for ${subset} must be crossorigin`).toContain('crossorigin');
+        const href = tag?.match(/href="([^"]+)"/)?.[1] ?? '';
+        const diskPath = path.join(distDir, stripBase(href).replace(/^\//, ''));
+        expect(existsSync(diskPath), `${file} preloads ${href}, which is not in dist`).toBe(true);
+      }
+    }
+  });
+
+  it('marks the about page as an AboutPage for the creator entity', () => {
+    const html = readFileSync(path.join(distDir, 'about/index.html'), 'utf8');
+    expect(html).toContain('"@type":"AboutPage"');
+    expect(html).toContain('"@type":"Person"');
+  });
+
+  it('ships KaTeX styling for pages that render math', () => {
+    // Math is pre-rendered HTML; without its stylesheet it paints unstyled.
+    const astroDir = path.join(distDir, '_astro');
+    const cssFiles = readdirSync(astroDir).filter((f) => f.endsWith('.css'));
+    const withKatex = cssFiles.filter((f) => readFileSync(path.join(astroDir, f), 'utf8').includes('.katex'));
+    expect(withKatex.length, 'no built stylesheet contains KaTeX rules').toBeGreaterThan(0);
+    const mathPages = htmlFiles.filter((f) => readFileSync(f, 'utf8').includes('class="katex'));
+    expect(mathPages.length, 'KaTeX CSS ships but no page renders math').toBeGreaterThan(0);
+  });
+  it('never doubles the deployment base in absolute URLs', () => {
+    // SITE_URL was once defaulted to https://<owner>.github.io/<repo> while
+    // BASE_PATH also carried /<repo>, doubling every absolute URL
+    // (canonical, og:url, robots sitemap) to /<repo>/<repo>/... .
+    const base = BASE;
+    if (!base) return;
+    const doubled = `${base}${base}/`;
+    for (const file of htmlFiles) {
+      const html = readFileSync(file, 'utf8');
+      const canonical = html.match(/<link rel="canonical"[^>]*>/)?.[0] ?? '';
+      expect(canonical, `${file} doubles the base in canonical`).not.toContain(doubled);
+      const ogUrl = html.match(/<meta property="og:url"[^>]*>/)?.[0] ?? '';
+      expect(ogUrl, `${file} doubles the base in og:url`).not.toContain(doubled);
+    }
+    const robots = readFileSync(path.join(distDir, 'robots.txt'), 'utf8');
+    expect(robots, 'robots.txt doubles the base in the sitemap URL').not.toContain(doubled);
+    const sitemap = readFileSync(path.join(distDir, 'sitemap-0.xml'), 'utf8');
+    expect(sitemap, 'sitemap doubles the base').not.toContain(doubled);
+  });
+  it('omits build-time lastmod so deploys do not mark every URL changed', () => {
+    // A `lastmod: new Date()` stamp marks all URLs changed on every build,
+    // wasting crawl budget. No lastmod until per-page modification evidence.
+    const xml = readFileSync(path.join(distDir, 'sitemap-0.xml'), 'utf8');
+    const urls = (xml.match(/<loc>/g) ?? []).length;
+    expect(urls, 'sitemap has no URLs').toBeGreaterThan(0);
+    expect(xml, 'sitemap must not carry build-time lastmod stamps').not.toContain('<lastmod>');
+  });
+
+  it('stripBase delegates to the shared lib helper', () => {
+    // Dedup guard: the local wrapper must stay a thin alias of
+    // `stripBaseWith(BASE, …)` so output assertions and nav highlighting
+    // can never drift apart again.
+    expect(stripBase('/physics2/lessons/x')).toBe(stripBaseWith(BASE, '/physics2/lessons/x'));
+    expect(stripBaseWith('/physics2', '/physics2')).toBe('/');
+    expect(stripBaseWith('', '/lessons')).toBe('/lessons');
+  });
+
+  it('marks high-intent nav links for prefetch', () => {
+    // `prefetch: { prefetchAll: false }` in astro.config.mjs means only these
+    // links prefetch on hover/tap; everything else stays on-demand.
+    const home = readFileSync(path.join(distDir, 'index.html'), 'utf8');
+    expect(home, 'header nav links lost data-astro-prefetch').toMatch(/data-astro-prefetch/);
+    const lesson = readFileSync(path.join(distDir, 'lessons/01-intro-to-calculus/index.html'), 'utf8');
+    expect(lesson.match(/data-astro-prefetch/g)?.length ?? 0, 'lesson page should prefetch header + prev/next links').toBeGreaterThan(10);
+  });
+
+  it('serves the saved page with one h1, RTL, noindex, and an empty-plate CTA', () => {
+    // The /saved shell must be meaningful without JS: a signed-in-state-free
+    // static plate (covered by the global RTL/h1 invariants) plus an
+    // imperative CTA into the course.
+    const html = readFileSync(path.join(distDir, 'saved/index.html'), 'utf8');
+    expect(html).toMatch(/<html[^>]*dir="rtl"/);
+    expect(html).toMatch(/<html[^>]*lang="fa"/);
+    expect(html.match(/<h1[\s>]/g) ?? []).toHaveLength(1);
+    expect(html).toContain('<h1');
+    expect(html).toContain('نشان‌شده‌ها');
+    expect(html).toMatch(/<meta name="robots" content="noindex, follow"/);
+    expect(html).toContain('هنوز چیزی را نشان نکرده‌اید');
+    expect(html).toContain('رفتن به فهرست درس‌ها');
+  });
+
+  it('ships repeat-visit cache headers for hashed assets', () => {
+    const headers = path.join(distDir, '_headers');
+    expect(existsSync(headers), 'dist/_headers missing (Cloudflare Pages caching)').toBe(true);
+    const body = readFileSync(headers, 'utf8');
+    expect(body, '_headers must pin /_astro/* immutable').toMatch(/\/_astro\/\*[\s\S]*immutable/);
+  });
+});

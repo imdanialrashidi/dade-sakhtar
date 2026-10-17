@@ -1,0 +1,12 @@
+---
+/**
+ * CommandPalette host — mounts the Cmd/Ctrl+K palette island once per page.
+ * Rendered by BaseLayout when the `commandPalette` feature is enabled.
+ *
+ * The island takes no props: it reads the single shared `#site-search-index`
+ * payload the layout serializes once per page (see `BaseLayout.astro`).
+ */
+import CommandPalette from '../../islands/common/CommandPalette';
+---
+
+<CommandPalette client:idle />

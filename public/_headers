@@ -1,0 +1,24 @@
+# Repeat-visit caching (read by Cloudflare Pages; ignored by other hosts).
+# Every file under /_astro/* carries a content hash, so it is immutable.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Unhashed brand assets change rarely; a day keeps re-themes safe.
+# (Regenerating favicons still needs a fresh deploy — see scripts/make-favicons.mjs.)
+/favicon.svg
+  Cache-Control: public, max-age=86400
+/favicon-48.png
+  Cache-Control: public, max-age=86400
+/apple-touch-icon.png
+  Cache-Control: public, max-age=86400
+/og-image.png
+  Cache-Control: public, max-age=86400
+
+# Defense-in-depth hardening (honored by Cloudflare Pages; GitHub Pages
+# ignores _headers entirely, so the JSON-LD escaper is the portable fix).
+# CSP is deliberately deferred: inline theme-bootstrap scripts in
+# BaseLayout.astro need hashes first.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN

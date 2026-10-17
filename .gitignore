@@ -1,0 +1,41 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Confidential project/client material
+docs/private/**
+!docs/private/.gitkeep
+
+# Omp local state is user-global or stored under .artifacts/; project config in .omp/ is committed.
+
+# Dependencies and environments
+node_modules/
+.venv/
+venv/
+vendor/
+
+# Build, test, browser, and framework output
+dist/
+.astro/
+build/
+coverage/
+target/
+.next/
+.turbo/
+.vite/
+.artifacts/
+playwright-report/
+test-results/
+*.log
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
