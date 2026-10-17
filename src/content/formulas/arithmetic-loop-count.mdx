@@ -1,0 +1,31 @@
+---
+type: formula
+title: شمارش حلقهٔ گام‌ثابت
+name: "حلقهٔ حسابی (Arithmetic Loop Count)"
+description: "تعداد اجرای حلقهٔ for با گام ثابت k: کف b منهای a بخش بر k به‌علاوهٔ یک."
+section: foundations
+difficulty: beginner
+order: 3
+estimatedMinutes: 5
+tags: [حلقه, تحلیل الگوریتم]
+latex: "C = \\left\\lfloor \\frac{b-a}{k} \\right\\rfloor + 1"
+conditions:
+  - "کران‌ها شامل‌اند: حلقه i از a تا b با شرط i کوچک‌ترمساوی b است."
+  - "باید b بزرگ‌ترمساوی a باشد؛ وگرنه حلقه صفر بار اجرا می‌شود."
+  - "گام k مثبت است."
+---
+
+حلقه‌ای که با گام ثابت جلو می‌رود:
+
+```
+for (i = a; i <= b; i += k)
+```
+
+<Formula
+  id="arithmetic-loop-count"
+  latex={"C(a, b, k) = \\left\\lfloor \\frac{b-a}{k} \\right\\rfloor + 1 \\qquad (b \\geq a,\\ k > 0)"}
+  caption="تعداد اجرای حلقهٔ گام‌ثابت"
+  usage="مثلاً از ۱ تا ۱۰ با گام ۳ می‌شود کف ۹/۳ به‌علاوهٔ ۱ یعنی ۴ بار."
+/>
+
+چرا کف (floor)؟ چون آخرین گامِ ناقص شمرده نمی‌شود: وقتی فاصله بر گام بخش‌پذیر نیست، مقصد رد می‌شود و حلقه یک بار کمتر می‌چرخد.

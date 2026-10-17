@@ -1,0 +1,22 @@
+---
+type: concept
+title: تتا
+short: رشد دقیق؛ f در Θ(g) است اگر هم در O(g) و هم در Ω(g) باشد.
+description: "تتا (Big-Theta) چیست؟ اشتراک اوی بزرگ و امگا بزرگ و قضیهٔ T(n) مساوی n در n منهای 1 دوم."
+section: foundations
+difficulty: intermediate
+order: 17
+estimatedMinutes: 6
+tags: [تحلیل الگوریتم]
+formulas: [big-theta-definition, bubble-sort-theta]
+---
+
+## سقف و کف با هم
+
+تتا (Big-Theta) رشد دقیق را قاب می‌کند: هم سقف دارد هم کف.
+
+<Definition term="تتا" alt="Big-Theta">
+  <Formula inline latex={"f(n) \\in \\Theta(g(n))"} /> اگر هم <Formula inline latex={"f(n) \\in O(g(n))"} /> باشد و هم <Formula inline latex={"f(n) \\in \\Omega(g(n))"} />.
+</Definition>
+
+مثال کامل: هزینهٔ مرتب‌سازی حبابی <Formula inline latex={"T(n) = n(n-1)/2"} /> است. این تابع هم زیر سقف درجه دو می‌ماند و هم بالای کف درجه دو، پس <Formula inline latex={"T(n) \\in \\Theta(n^2)"} />. اثبات قدم‌به‌قدمش را در مثال حل‌شده ببین.

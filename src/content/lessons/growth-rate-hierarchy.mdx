@@ -1,0 +1,118 @@
+---
+type: lesson
+title: سلسله‌مراتب رشد
+description: "ترتیب رشدها از ثابت تا فاکتوریل و قاعدهٔ جملهٔ غالب: چرا n! همه را می‌بلعد."
+section: foundations
+difficulty: beginner
+order: 6
+estimatedMinutes: 12
+objective: بتوانید هر تابعی را روی نردبان رشد جا بدهید و با قاعدهٔ جملهٔ غالب مرتبهٔ یک مجموع را بگویید.
+tags: [تحلیل الگوریتم]
+prerequisites: [analyzing-loops]
+concepts: [dominant-term-rule]
+formulas: [growth-hierarchy]
+---
+
+حالا که بلدی حلقه‌ها را بشمری، این درس خط‌کشِ مقایسه را می‌دهد: یک نردبان که هر رشدی جایش معلوم است.
+
+<Prerequisite ids={["analyzing-loops"]} />
+
+## نردبان رشد
+
+<Formula
+  id="hierarchy"
+  latex={"1 < \\log n < n < n \\log n < n^2 < n^3 < \\cdots < 2^n < 3^n < \\cdots < n!"}
+  caption="سلسله‌مراتب نرخ‌های رشد"
+/>
+
+<InteractiveFigure
+  id="fig-hierarchy"
+  caption="نمودار شماتیک رشدها: نمایی و فاکتوریل خیلی زود از درجه‌ها جدا می‌شوند."
+  viewBox="0 0 340 200"
+  alt="نمودار شماتیک مقایسه رشد خطی و درجه دو و نمایی"
+>
+  <line x1="40" y1="170" x2="40" y2="15" stroke="rgb(var(--rgb-border-control))" stroke-width="1.25" />
+  <line x1="40" y1="170" x2="325" y2="170" stroke="rgb(var(--rgb-border-control))" stroke-width="1.25" />
+  <path d="M45 165 L320 150" stroke="rgb(var(--rgb-border-control))" stroke-width="1.5" fill="none" />
+  <path d="M45 165 Q180 160 320 60" stroke="rgb(var(--rgb-primary))" stroke-width="2" fill="none" />
+  <path d="M45 165 Q150 160 200 150 Q260 120 300 20" stroke="rgb(var(--rgb-border-control))" stroke-width="1.25" stroke-dasharray="5 4" fill="none" />
+  <circle cx="320" cy="150" r="3.5" fill="rgb(var(--rgb-border-control))" />
+  <circle cx="320" cy="60" r="4" fill="rgb(var(--rgb-primary))" />
+  <circle cx="300" cy="20" r="3.5" fill="rgb(var(--rgb-border-control))" />
+</InteractiveFigure>
+
+از چپ به راست کندتر می‌شوی: ثابت از همه سریع‌تر است و فاکتوریل از همه کندتر. پایهٔ لگاریتم در مرتبه فرقی نمی‌کند، چون فقط یک ضریب ثابت جابه‌جا می‌شود و ضریب‌ها حذف می‌شوند.
+
+## قاعدهٔ جملهٔ غالب
+
+وقتی چند رشد جمع می‌شوند، فقط سریع‌ترینشان برای ورودی بزرگ مهم است.
+
+<Definition term="جملهٔ غالب" alt="Dominant Term">
+  در مجموع چند تابع رشد، تابعی که از همه سریع‌تر رشد می‌کند؛ بقیه و همهٔ ثابت‌ها حذف می‌شوند.
+</Definition>
+
+مثال معروف: <Formula inline latex={"n! + 2^n + 1000n^{10}"} /> از مرتبهٔ <Formula inline latex={"O(n!)"} /> است. توجه کن که این حرفِ مجانبی است: برای <Formula inline latex={"n = 10"} /> هنوز جملهٔ درجه ده بزرگ‌تر است، ولی از <Formula inline latex={"n = 20"} /> به بعد فاکتوریل جلو می‌زند و اختلاف هر چه می‌رود بیشتر می‌شود. اجرای کد همین گذار را نشان می‌دهد.
+
+<Confused prerequisites={["dominant-term-rule"]} retry="سه جمله را جدا روی نردبان پیدا کن، بعد فقط بالاترین را نگه دار">
+  اگر حذف جمله‌ها دل‌به‌خواه به نظر می‌رسد، هر جمله را جدا روی نردبان بگذار: پایین‌ترین (کندترین رشد) حذف می‌شود چون در برابر بالاترین ناچیز است.
+</Confused>
+
+## جمع‌بندی
+
+در این درس دیدی که:
+
+1. رشدها ترتیب ثابت دارند، از ۱ تا <Formula inline latex={"n!"} />.
+2. در جمع، فقط جملهٔ غالب می‌ماند.
+3. ثابت‌ها و پایهٔ لگاریتم در مرتبه حذف می‌شوند.
+
+## خودتان را بسنجید
+
+<Quiz
+  id="quiz-growth-rate-hierarchy"
+  title="سنجش فهم — سلسله‌مراتب رشد"
+  questions={[
+    {
+      id: 'q1',
+      type: 'multiple-choice',
+      text: 'کدام رشد کندتر (بالاتر روی نردبان) است؟',
+      options: [
+        { id: 'a', text: 'n log n' },
+        { id: 'b', text: 'n مربع' },
+        { id: 'c', text: '2 به‌توان n' },
+      ],
+      correctAnswer: 'c',
+      explanation: 'نمایی بالاتر از هر درجه‌ای است: … < n مربع < … < 2 به‌توان n. پس کندترین همین است.'
+    },
+    {
+      id: 'q2',
+      type: 'multiple-choice',
+      text: 'مرتبهٔ n! به‌علاوهٔ 2 به‌توان n به‌علاوهٔ 1000n به‌توان ۱۰ چیست؟',
+      options: [
+        { id: 'a', text: 'O(n به‌توان ۱۰)' },
+        { id: 'b', text: 'O(2 به‌توان n)' },
+        { id: 'c', text: 'O(n!)' },
+      ],
+      correctAnswer: 'c',
+      explanation: 'فاکتوریل سریع‌ترین رشد است و بقیه را می‌بلعد؛ جملهٔ غالب n! است.'
+    },
+    {
+      id: 'q3',
+      type: 'true-false',
+      text: 'پایهٔ لگاریتم در مرتبهٔ مجانبی فرقی نمی‌کند.',
+      options: [
+        { id: 'true', text: 'درست' },
+        { id: 'false', text: 'نادرست' },
+      ],
+      correctAnswer: 'true',
+      explanation: 'لگاریتم‌ها در مبناهای مختلف فقط در یک ضریب ثابت فرق دارند و ضریب‌ها در O حذف می‌شوند.'
+    },
+    {
+      id: 'q4',
+      type: 'numeric',
+      text: 'مرتبهٔ 3n مربع به‌علاوهٔ ۵n به‌علاوهٔ ۷ کدام درجه است؟ فقط توان n را بنویسید (مثلاً ۲).',
+      numericAnswer: 2,
+      tolerance: 0,
+      explanation: 'جملهٔ غالب 3n مربع است و ضریب ۳ هم حذف می‌شود؛ پس درجهٔ ۲.'
+    },
+  ]}
+/>

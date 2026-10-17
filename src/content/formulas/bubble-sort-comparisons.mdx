@@ -1,0 +1,35 @@
+---
+type: formula
+title: شمارش مقایسه‌های مرتب‌سازی حبابی
+name: "مقایسه‌های حباب (Bubble Sort Comparisons)"
+description: "تعداد مقایسه‌های مرتب‌سازی حبابی دقیقاً n در n منهای 1 دوم است؛ اثبات با جمع پاس‌ها."
+section: foundations
+difficulty: beginner
+order: 2
+estimatedMinutes: 6
+prerequisites: [best-worst-average-case]
+tags: [مرتب‌سازی, تحلیل الگوریتم]
+latex: "C(n) = \\frac{n(n-1)}{2}"
+concepts: [best-worst-average-case]
+conditions:
+  - "هر پاس روی بخشِ مرتب‌نشده اجرا می‌شود و یک عنصر سر جایش می‌نشیند."
+  - "مقایسهٔ هر جفت مجاور دقیقاً یک بار شمرده می‌شود."
+---
+
+مرتب‌سازی حبابی در هر پاس، جفت‌های مجاور بخشِ مرتب‌نشده را مقایسه می‌کند. پاس اول <Formula inline latex={"n-1"} /> مقایسه، پاس دوم <Formula inline latex={"n-2"} /> مقایسه و همین‌طور تا پاس آخر با یک مقایسه.
+
+<Formula
+  id="bubble-sort-comparisons"
+  latex={"C(n) = (n-1) + (n-2) + \\cdots + 1 = \\frac{n(n-1)}{2}"}
+  caption="تعداد مقایسه‌های مرتب‌سازی حبابی"
+  usage="برای n مساوی ۵ می‌شود ۱۰ مقایسه؛ برای n مساوی ۱۰ می‌شود ۴۵ مقایسه."
+/>
+
+<FormulaBreakdown
+  title="اجزای فرمول"
+  terms={[
+    { term: "n - 1", label: 'پاس اول', detail: 'بلندترین پاس؛ روی کل لیست به‌جز آخرین خانه.' },
+    { term: "\\cdots + 1", label: 'پاس‌های بعدی', detail: 'هر پاس یکی کم می‌شود چون آخر لیست مرتب شده است.' },
+    { term: "n(n-1)/2", label: 'جمع حسابی', detail: 'جمع ۱ تا n-1؛ همان عدد مثلثی.' },
+  ]}
+/>

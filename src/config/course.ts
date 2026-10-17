@@ -13,11 +13,11 @@ import type { CourseConfig } from '../lib/types';
 
 export const courseConfig: CourseConfig = {
   // --- Identity (course-specific) ---
-  title: 'حساب دیفرانسیل، قدم‌به‌قدم',
-  tagline: 'از حد تا قاعدهٔ زنجیره‌ای — با مثال حل‌شده، فرمول دقیق و تمرین',
+  title: 'ساختمان داده‌ها و الگوریتم‌ها',
+  tagline: 'از تعریف الگوریتم تا تحلیل مرتبه — قدم‌به‌قدم فارسی',
   description:
-    'درس‌نامهٔ آزاد و قدم‌به‌قدم حساب دیفرانسیل: هر مفهوم با مثال حل‌شده، هر فرمول با توضیح دقیق. از حد شروع کنید و تا قاعدهٔ زنجیره‌ای پیش بروید.',
-  shortDescription: 'درس‌نامهٔ قدم‌به‌قدم حساب دیفرانسیل',
+    'درس‌نامهٔ آزاد و قدم‌به‌قدم ساختمان داده‌ها و الگوریتم‌ها: هر ایده با مثال حل‌شده، هر فرمول با اثبات و هر عدد با اجرای کد.',
+  shortDescription: 'درس‌نامهٔ قدم‌به‌قدم ساختمان داده‌ها و الگوریتم‌ها',
   locale: 'fa',
   direction: 'rtl',
 
@@ -27,42 +27,24 @@ export const courseConfig: CourseConfig = {
   // needed. Then regenerate the raster favicons from the new mark:
   // npm run build && node scripts/make-favicons.mjs && npm run build
   logo: {
-    monogram: 'ح',
-    icon: 'formula',
+    monogram: 'س',
+    icon: 'layers',
   },
 
   // --- Course metadata ---
   difficulty: 'beginner',
   estimatedDuration: 'خودآموز',
   difficultyLevel: 3, // 1–5 scale
-  tags: ['ریاضی', 'حساب دیفرانسیل', 'حد و مشتق'],
+  tags: ['ساختمان داده', 'الگوریتم', 'تحلیل الگوریتم', 'بازگشت'],
   category: 'آموزشی',
 
   // --- Sections (navigation groups) ---
   sections: [
     {
       id: 'foundations',
-      title: 'مبانی',
-      description: 'مفاهیم اولیه و پیش‌نیازها',
+      title: 'مبانی و تحلیل الگوریتم',
+      description: 'تعریف الگوریتم و ساختمان داده، مقایسه الگوریتم‌ها و تحلیل مرتبه',
       order: 1,
-    },
-    {
-      id: 'calculus',
-      title: 'حساب دیفرانسیل و انتگرال',
-      description: 'مشتق، انتگرال و کاربردهایشان',
-      order: 2,
-    },
-    {
-      id: 'physics',
-      title: 'فیزیک',
-      description: 'مکانیک، الکتریسیته و مغناطیس‌گری',
-      order: 3,
-    },
-    {
-      id: 'practice',
-      title: 'تمرین',
-      description: 'سوالات و مسائل تمرینی',
-      order: 4,
     },
   ],
 
@@ -70,11 +52,11 @@ export const courseConfig: CourseConfig = {
   // `themePreset` selects a shared preset from `src/lib/themes.ts`; inline
   // `theme.colors` still wins when both are set, so a course can start from a
   // preset and adjust one role. Never fork `src/styles/theme.css` per course.
-  themePreset: 'calculus',
+  themePreset: 'programming',
   theme: {
-    name: 'calculus',
-    // Roles come from the `calculus` preset in src/lib/themes.ts (the
-    // documented paper/teal/ochre palette). Override a single role here only
+    name: 'programming',
+    // Roles come from the `programming` preset in src/lib/themes.ts (the
+    // documented green/brown palette). Override a single role here only
     // when the course genuinely needs it — never fork theme.css.
     colors: {},
     typography: 'traditional',

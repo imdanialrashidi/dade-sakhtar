@@ -1,0 +1,27 @@
+---
+type: formula
+title: تعریف امگا بزرگ
+name: "تعریف امگا بزرگ (Big-Omega Definition)"
+description: "تعریف رسمی امگا بزرگ با c و n صفر: f در Ω(g) اگر از جایی به بعد بالای c برابر g بماند."
+section: foundations
+difficulty: intermediate
+order: 8
+estimatedMinutes: 5
+tags: [تحلیل الگوریتم]
+latex: "f(n) \\in \\Omega(g(n)) \\iff \\exists c > 0, n_0 \\geq 0: \\forall n \\geq n_0,\\ f(n) \\geq c \\cdot g(n)"
+concepts: [big-omega]
+conditions:
+  - "تابع‌ها برای ورودی‌های بزرگِ نامنفی در نظر گرفته می‌شوند."
+  - "ثابت c باید اکیداً مثبت باشد."
+---
+
+## تعریف رسمی
+
+<Formula
+  id="big-omega-definition"
+  latex={"f(n) \\in \\Omega(g(n)) \\iff \\exists c > 0,\\ n_0 \\geq 0:\\ \\forall n \\geq n_0,\\ f(n) \\geq c \\cdot g(n)"}
+  caption="تعریف رسمی امگا بزرگ"
+  usage="برای اثبات، یک c و یک n صفر معرفی کن و نامساوی معکوس را برای همهٔ nهای بزرگ‌تر چک کن."
+/>
+
+معنای نموداری: از نقطهٔ <Formula inline latex={"n_0"} /> به بعد، منحنی <Formula inline latex={"f"} /> هیچ‌وقت از منحنیِ <Formula inline latex={"c \\cdot g"} /> پایین‌تر نمی‌آید.

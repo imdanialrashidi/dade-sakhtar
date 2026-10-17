@@ -128,14 +128,14 @@ const courseJsonLd = {
         )}
       </div>
 
-      {/* Course visual: a thin-stroke derivative plate, not decoration.
+      {/* Course visual: a thin-stroke growth-hierarchy plate, not decoration.
           Below `lg` it stacks under the text, capped and centered so it never
           becomes a full-bleed giant on tablets. */}
       <figure class="mx-auto min-w-0 w-full max-w-2xl overflow-hidden rounded-lg border border-line bg-surface lg:col-span-5 lg:max-w-none lg:self-center">
         <svg
           viewBox="0 0 400 260"
           role="img"
-          aria-label="نمودار یک تابع صعودی با خط مماس در یک نقطه — شیب مماس همان مشتق است"
+          aria-label="نمودار شماتیک رشد الگوریتم‌ها: خطی، درجه دو و نمایی — نمایی خیلی زود از بقیه جدا می‌شود"
           class="block h-auto w-full"
         >
           <rect x="0.5" y="0.5" width="399" height="259" fill="none" />
@@ -153,27 +153,43 @@ const courseJsonLd = {
             <line x1="24" y1="228" x2="384" y2="228" />
             <line x1="40" y1="16" x2="40" y2="244" />
           </g>
-          {/* curve f(x) */}
+          {/* linear: steady climb */}
           <path
-            d="M40 208 C 110 200, 150 168, 195 138 S 300 76, 360 44"
+            d="M40 210 L360 170"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
             stroke-linecap="round"
             class="text-primary"
           />
-          {/* tangent at the marked point */}
-          <line x1="130" y1="196" x2="270" y2="92" stroke="currentColor" stroke-width="1.5" stroke-dasharray="6 4" class="text-accent" />
-          <circle cx="200" cy="142" r="5" fill="currentColor" class="text-accent" />
-          <circle cx="200" cy="142" r="10" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5" class="text-accent" />
+          {/* quadratic: gentle then steeper */}
+          <path
+            d="M40 210 Q 200 205, 360 60"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-dasharray="6 4"
+            class="text-accent"
+          />
+          {/* exponential: flat then vertical */}
+          <path
+            d="M40 210 Q 200 208, 280 190 Q 330 160, 352 30"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            opacity="0.7"
+            class="text-ink"
+          />
           {/* labels */}
-          <text x="352" y="240" font-size="13" fill="currentColor" opacity="0.6" class="text-ink" text-anchor="middle">x</text>
-          <text x="28" y="32" font-size="13" fill="currentColor" opacity="0.6" class="text-ink" text-anchor="middle">y</text>
-          <text x="282" y="86" font-size="12.5" fill="currentColor" class="text-accent">مماس = مشتق</text>
-          <text x="120" y="222" font-size="12.5" fill="currentColor" opacity="0.75" class="text-ink">تابع</text>
+          <text x="352" y="240" font-size="13" fill="currentColor" opacity="0.6" class="text-ink" text-anchor="middle">n</text>
+          <text x="28" y="32" font-size="13" fill="currentColor" opacity="0.6" class="text-ink" text-anchor="middle">T</text>
+          <text x="300" y="150" font-size="12.5" fill="currentColor" class="text-primary">n خطی</text>
+          <text x="270" y="110" font-size="12.5" fill="currentColor" class="text-accent">n مربع</text>
+          <text x="300" y="45" font-size="12.5" fill="currentColor" opacity="0.75" class="text-ink">نمایی</text>
         </svg>
         <figcaption class="border-t border-line px-4 py-2.5 text-xs leading-relaxed text-ink-muted">
-          شیب خط مماس در هر نقطه، مشتق تابع در همان نقطه است — ایده‌ای که این دوره دور آن ساخته شده.
+          سه رشد سرنوشت‌ساز: خطی آرام بالا می‌رود، درجه دو تندتر می‌شود و نمایی خیلی زود از هر دو جدا می‌شود — ایده‌ای که این دوره دور آن ساخته شده.
         </figcaption>
       </figure>
     </div>

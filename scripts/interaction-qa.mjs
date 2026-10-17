@@ -64,16 +64,19 @@ const browser = await chromium.launch({ headless: true, executablePath: resolveC
   const submit = quiz.getByRole('button', { name: 'بررسی پاسخ‌ها' });
   check('quiz: submit disabled before answering', await submit.isDisabled());
 
-  // Independent oracle: read from the lesson content, not from the app's own
-  // output. q1=a, q2=b (decreasing), q3=true, q4=b (product rule), q5=3.
+  // Independent oracle: read from the practice content, not from the app's
+  // own output. practice-foundations (DSA ch.1): q1=b (finiteness), q2=b
+  // (ADT both), q3=false (wall-clock unfair), q4=b ((n+1)/2), q5=15
+  // (bubble n=6), q6=5 (loop 1..20 step 4), q7=true (factorial dominates).
   const questions = quiz.locator('ol > li');
-  const CORRECT_PICKS = ['a', 'b', 'true', 'b'];
+  const CORRECT_PICKS = ['b', 'b', 'false', 'b'];
   for (let i = 0; i < CORRECT_PICKS.length; i += 1) {
     await questions.nth(i).locator(`label:has(input[value="${CORRECT_PICKS[i]}"])`).click();
   }
   // Numeric questions take typed input (Persian digits accepted too).
-  await questions.nth(4).locator('input[type="text"]').fill('3');
-
+  await questions.nth(4).locator('input[type="text"]').fill('15');
+  await questions.nth(5).locator('input[type="text"]').fill('۵');
+  await questions.nth(6).locator(`label:has(input[value="true"])`).click();
   check('quiz: submit enabled after answering all', await submit.isEnabled());
   await submit.click();
   await page.waitForTimeout(200);
@@ -87,11 +90,13 @@ const browser = await chromium.launch({ headless: true, executablePath: resolveC
   check('quiz: retry resets to unanswered', await submit.isDisabled());
 
   // Wrong answers must be marked and explained.
-  const WRONG_PICKS = ['b', 'a', 'false', 'a'];
+  const WRONG_PICKS = ['a', 'a', 'true', 'a'];
   for (let i = 0; i < WRONG_PICKS.length; i += 1) {
     await questions.nth(i).locator(`label:has(input[value="${WRONG_PICKS[i]}"])`).click();
   }
   await questions.nth(4).locator('input[type="text"]').fill('999');
+  await questions.nth(5).locator('input[type="text"]').fill('999');
+  await questions.nth(6).locator(`label:has(input[value="false"])`).click();
   await submit.click();
   await page.waitForTimeout(200);
   const wrongStatus = await quiz.locator('footer').getByRole('status').innerText();
@@ -102,7 +107,7 @@ const browser = await chromium.launch({ headless: true, executablePath: resolveC
   // Score must survive a reload through the progress store.
   await page.reload({ waitUntil: 'networkidle' });
   const stored = await page.evaluate(() => localStorage.getItem('dr-study-progress:v1'));
-  check('quiz: score persisted to localStorage', Boolean(stored && stored.includes('practice-foundations-1')));
+  check('quiz: score persisted to localStorage', Boolean(stored && stored.includes('practice-foundations')));
 
   check('quiz: no uncaught page errors', errors.length === 0, errors.join(' | '));
   await context.close();
@@ -112,7 +117,7 @@ const browser = await chromium.launch({ headless: true, executablePath: resolveC
 {
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: 'fa-IR' });
   const page = await context.newPage();
-  await page.goto(`${base}/examples/chain-rule-example`, { waitUntil: 'networkidle' });
+  await page.goto(`${base}/examples/swap-two-variables`, { waitUntil: 'networkidle' });
 
   const reveal = page.locator('section[aria-label="راه‌حل گام‌به‌گام"]');
   await reveal.waitFor({ state: 'visible', timeout: 10000 });
@@ -155,14 +160,14 @@ const browser = await chromium.launch({ headless: true, executablePath: resolveC
   });
   check('search: island actually hydrated', true);
 
-  await input.fill('مشتق');
+  await input.fill('الگوریتم');
   await page.waitForTimeout(250);
   const results = await page.locator('main ul li a').count();
   check('search: returns results for a Persian query', results >= 3, `${results} results`);
 
   // Arabic keyboard variant of the same word must still match.
   await input.fill('');
-  await input.type('مشتق', { delay: 10 });
+  await input.type('الگوریتم', { delay: 10 });
   await page.waitForTimeout(250);
   check('search: typed query still matches', (await page.locator('main ul li a').count()) >= 3);
 
@@ -182,7 +187,7 @@ const browser = await chromium.launch({ headless: true, executablePath: resolveC
 {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'fa-IR' });
   const page = await context.newPage();
-  await page.goto(`${base}/lessons/01-intro-to-calculus`, { waitUntil: 'networkidle' });
+  await page.goto(`${base}/lessons/what-is-an-algorithm`, { waitUntil: 'networkidle' });
 
   const toggle = page.getByRole('button', { name: 'تمام کردم' });
   await toggle.scrollIntoViewIfNeeded();
@@ -221,7 +226,7 @@ const browser = await chromium.launch({ headless: true, executablePath: resolveC
   check('progress: homepage readout reflects stored progress', readout === 1);
 
   // Unmarking must remove it.
-  await page.goto(`${base}/lessons/01-intro-to-calculus`, { waitUntil: 'networkidle' });
+  await page.goto(`${base}/lessons/what-is-an-algorithm`, { waitUntil: 'networkidle' });
   await page.getByRole('button', { name: 'تمام کردم' }).scrollIntoViewIfNeeded();
   await page.waitForFunction(() => document.documentElement.dataset.progressHydrated === 'true', null, {
     timeout: 10000,

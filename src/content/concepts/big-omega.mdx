@@ -1,0 +1,22 @@
+---
+type: concept
+title: امگا بزرگ
+short: کران پایین رشد؛ f در Ω(g) است اگر از جایی به بعد بالای کف c برابر g بماند.
+description: "امگا بزرگ (Big-Omega) چیست؟ تعریف رسمی، معنای نموداری، و اثبات n مربع به‌علاوهٔ 10n."
+section: foundations
+difficulty: intermediate
+order: 16
+estimatedMinutes: 6
+tags: [تحلیل الگوریتم]
+formulas: [big-omega-definition]
+---
+
+## کف رشد
+
+امگا بزرگ (Big-Omega) می‌گوید تابع حداقل با چه سرعتی رشد می‌کند.
+
+<Definition term="امگا بزرگ" alt="Big-Omega">
+  <Formula inline latex={"f(n) \\in \\Omega(g(n))"} /> اگر عددهای مثبت <Formula inline latex={"c"} /> و <Formula inline latex={"n_0"} /> باشند که برای همهٔ <Formula inline latex={"n \\geq n_0"} /> داشته باشیم <Formula inline latex={"f(n) \\geq c \\cdot g(n)"} />.
+</Definition>
+
+روی نمودار یعنی: از یک نقطه به بعد، منحنی <Formula inline latex={"f"} /> همیشه بالای منحنیِ <Formula inline latex={"c \\cdot g"} /> می‌ماند. مثلاً <Formula inline latex={"n^2 + 10n"} /> در <Formula inline latex={"\\Omega(n^2)"} /> است با <Formula inline latex={"c = 1"} /> و <Formula inline latex={"n_0 = 0"} />: چون جملهٔ <Formula inline latex={"10n"} /> نامنفی است، <Formula inline latex={"n^2 + 10n \\geq n^2"} /> همیشه برقرار است.

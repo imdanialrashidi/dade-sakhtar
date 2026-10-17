@@ -1,0 +1,34 @@
+---
+type: formula
+title: سلسله‌مراتب رشد
+name: "سلسله‌مراتب رشد (Growth Hierarchy)"
+description: "ترتیب رشدها از ثابت تا فاکتوریل: ۱ و لگاریتم و n و n لگاریتم n و درجه‌ها و نمایی و فاکتوریل."
+section: foundations
+difficulty: beginner
+order: 6
+estimatedMinutes: 7
+tags: [تحلیل الگوریتم]
+latex: "1 < \\log n < n < n \\log n < n^2 < n^3 < \\cdots < 2^n < 3^n < \\cdots < n!"
+concepts: [dominant-term-rule]
+---
+
+## ترتیب کامل
+
+<Formula
+  id="growth-hierarchy"
+  latex={"1 < \\log n < n < n \\log n < n^2 < n^3 < \\cdots < 2^n < 3^n < \\cdots < n!"}
+  caption="سلسله‌مراتب نرخ‌های رشد"
+  usage="برای مقایسهٔ دو الگوریتم، جای هر کدام را روی این نردبان پیدا کن؛ بالاتر یعنی کندتر."
+/>
+
+<FormulaBreakdown
+  title="خواندن نردبان"
+  terms={[
+    { term: "1", label: 'ثابت', detail: 'هزینه ربطی به ورودی ندارد؛ مثل دسترسی به خانهٔ آرایه.' },
+    { term: "\\log n", label: 'لگاریتمی', detail: 'هر بار مسئله نصف می‌شود؛ مثل جست‌وجوی دودویی.' },
+    { term: "n \\log n", label: 'خطی-لگاریتمی', detail: 'سقف مرتب‌سازی‌های مقایسه‌ای خوب.' },
+    { term: "2^n,\\ n!", label: 'نمایی و فاکتوریل', detail: 'انفجاری؛ فقط برای ورودی کوچک عملی‌اند.' },
+  ]}
+/>
+
+نکتهٔ کاربردی: پایهٔ لگاریتم در مرتبه فرقی نمی‌کند، چون لگاریتم‌ها فقط در یک ضریب ثابت با هم فرق دارند و ضریب‌ها در اوی بزرگ حذف می‌شوند.

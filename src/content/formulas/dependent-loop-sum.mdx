@@ -1,0 +1,31 @@
+---
+type: formula
+title: جمع حلقهٔ وابستهٔ تو در تو
+name: "جمع وابسته (Dependent Loop Sum)"
+description: "هزینهٔ حلقه‌ای که کران درونی‌اش به بیرونی وابسته است: n در n به‌علاوهٔ 1 دوم."
+section: foundations
+difficulty: intermediate
+order: 5
+estimatedMinutes: 6
+tags: [حلقه, تحلیل الگوریتم]
+latex: "T(n) = \\frac{n(n+1)}{2}"
+conditions:
+  - "کران درونی به شمارندهٔ بیرونی وابسته است (نه ثابت)."
+  - "هر دو کران شامل‌اند."
+---
+
+حلقهٔ بیرونی <Formula inline latex={"n"} /> بار می‌چرخد و حلقهٔ درونی در تکرار <Formula inline latex={"i"} />-ام دقیقاً <Formula inline latex={"i"} /> بار اجرا می‌شود:
+
+```
+for (i = 1; i <= n; i++)
+  for (j = 1; j <= i; j++)
+```
+
+<Formula
+  id="dependent-loop-sum"
+  latex={"T(n) = 1 + 2 + \\cdots + n = \\frac{n(n+1)}{2}"}
+  caption="جمع حلقهٔ وابستهٔ تو در تو"
+  usage="برای n مساوی ۴ می‌شود ۱۰: یک به‌علاوهٔ دو به‌علاوهٔ سه به‌علاوهٔ چهار."
+/>
+
+این همان عدد مثلثی است که در حباب هم دیدی؛ فقط آنجا از <Formula inline latex={"n-1"} /> شروع می‌شد و اینجا از <Formula inline latex={"n"} />. هر دو از مرتبهٔ <Formula inline latex={"\\Theta(n^2)"} /> هستند.

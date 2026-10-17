@@ -1,0 +1,26 @@
+---
+type: concept
+title: اوی بزرگ
+short: کران بالای رشد؛ f در O(g) است اگر از جایی به بعد زیر سقف c برابر g بماند.
+description: "اوی بزرگ (Big-O) چیست؟ تعریف رسمی با c و n صفر، معنای نموداری، و اثبات n مربع به‌علاوهٔ 10n."
+section: foundations
+difficulty: intermediate
+order: 15
+estimatedMinutes: 7
+tags: [تحلیل الگوریتم]
+formulas: [big-o-definition]
+---
+
+## سقف رشد
+
+اوی بزرگ (Big-O) می‌گوید تابع حداکثر با چه سرعتی رشد می‌کند.
+
+<Definition term="اوی بزرگ" alt="Big-O">
+  <Formula inline latex={"f(n) \\in O(g(n))"} /> اگر عددهای مثبت <Formula inline latex={"c"} /> و <Formula inline latex={"n_0"} /> باشند که برای همهٔ <Formula inline latex={"n \\geq n_0"} /> داشته باشیم <Formula inline latex={"f(n) \\leq c \\cdot g(n)"} />.
+</Definition>
+
+روی نمودار یعنی: از یک نقطه به بعد، منحنی <Formula inline latex={"f"} /> همیشه زیر منحنیِ <Formula inline latex={"c \\cdot g"} /> می‌ماند. مثلاً <Formula inline latex={"n^2 + 10n"} /> در <Formula inline latex={"O(n^2)"} /> است با <Formula inline latex={"c = 2"} /> و <Formula inline latex={"n_0 = 10"} />: برای <Formula inline latex={"n \\geq 10"} /> داریم <Formula inline latex={"n^2 + 10n \\leq 2n^2"} />.
+
+<Confused prerequisites={["growth-hierarchy", "dominant-term-rule"]} retry="اول سلسله‌مراتب رشد را مرور کن، بعد برگرد و فقط نامساوی را با n مساوی ۱۰ امتحان کن">
+  اگر <Formula inline latex={"c"} /> و <Formula inline latex={"n_0"} /> گنگ‌اند، آن‌ها را «تنظیمات سقف» بدان: آن‌قدر سقف را بالا ببر (<Formula inline latex={"c"} />) و آن‌قدر جلو برو (<Formula inline latex={"n_0"} />) تا منحنی زیر سقف بماند.
+</Confused>

@@ -79,7 +79,7 @@ describeIfBuilt('built output', () => {
   });
 
   it('renders KaTeX markup rather than shipping a KaTeX runtime', () => {
-    const html = readFileSync(path.join(distDir, 'lessons/01-intro-to-calculus/index.html'), 'utf8');
+    const html = readFileSync(path.join(distDir, 'lessons/search-and-sort-costs/index.html'), 'utf8');
     expect(html).toContain('class="katex');
     expect(html).toContain('mfrac');
   });
@@ -277,7 +277,7 @@ describeIfBuilt('built output', () => {
     // links prefetch on hover/tap; everything else stays on-demand.
     const home = readFileSync(path.join(distDir, 'index.html'), 'utf8');
     expect(home, 'header nav links lost data-astro-prefetch').toMatch(/data-astro-prefetch/);
-    const lesson = readFileSync(path.join(distDir, 'lessons/01-intro-to-calculus/index.html'), 'utf8');
+    const lesson = readFileSync(path.join(distDir, 'lessons/what-is-an-algorithm/index.html'), 'utf8');
     expect(lesson.match(/data-astro-prefetch/g)?.length ?? 0, 'lesson page should prefetch header + prev/next links').toBeGreaterThan(10);
   });
 

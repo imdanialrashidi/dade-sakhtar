@@ -1,0 +1,55 @@
+---
+type: formula
+title: شمارش مقایسه‌های جست‌وجوی ترتیبی
+name: "شمارش جست‌وجوی ترتیبی (Sequential Search Counts)"
+description: "بهترین و بدترین و میانگین مقایسه در جست‌وجوی ترتیبی: ۱ و n و ‎(n+1)/2‎ با شرط‌های اعتبار."
+section: foundations
+difficulty: beginner
+order: 1
+estimatedMinutes: 6
+prerequisites: [best-worst-average-case]
+tags: [جست‌وجو, تحلیل الگوریتم]
+latex: "T_{avg}(n) = \\frac{n+1}{2}"
+concepts: [best-worst-average-case]
+conditions:
+  - "میانگین فقط وقتی (n+1)/2 است که کلید حتماً در لیست باشد."
+  - "جای کلید باید در همهٔ موقعیت‌ها هم‌احتمال باشد."
+  - "عمل اصلی مقایسهٔ کلید با عنصر است."
+---
+
+جست‌وجوی ترتیبی از اول لیست جلو می‌رود و هر عنصر را با کلید مقایسه می‌کند. عمل اصلی همین مقایسه است.
+
+<Formula
+  id="sequential-search-counts"
+  latex={"T_{best}(n) = 1 \\qquad T_{worst}(n) = n"}
+  caption="شمارش مقایسه‌های جست‌وجوی ترتیبی: بهترین و بدترین حالت"
+  usage="بهترین حالت وقتی است که کلید اول باشد؛ بدترین وقتی که آخر باشد یا نباشد."
+/>
+
+<Formula
+  id="sequential-search-average"
+  latex={"T_{avg}(n) = \\frac{n+1}{2}"}
+  caption="میانگین مقایسه‌های جست‌وجوی ترتیبی"
+  usage="فقط وقتی معتبر است که کلید حتماً در لیست باشد و جایش هم‌احتمال باشد."
+/>
+
+میانگین از کجا می‌آید؟ اگر کلید در موقعیت <Formula inline latex={"i"} /> باشد، <Formula inline latex={"i"} /> مقایسه لازم است. میانگین روی همهٔ موقعیت‌ها:
+
+<Formula
+  id="sequential-search-average-proof"
+  latex={"T_{avg}(n) = \\frac{1 + 2 + \\cdots + n}{n} = \\frac{n+1}{2}"}
+  caption="اثبات فرمول میانگین"
+/>
+
+<FormulaBreakdown
+  title="اجزای فرمول"
+  terms={[
+    { term: "T_{best} = 1", label: 'بهترین حالت', detail: 'کلید همان عنصر اول است؛ یک مقایسه کافی است.' },
+    { term: "T_{worst} = n", label: 'بدترین حالت', detail: 'کلید آخر است یا اصلاً نیست؛ همه مقایسه می‌شوند.' },
+    { term: "(n+1)/2", label: 'میانگین', detail: 'عدد دقیق است، نه نماد مجانبی؛ مرتبه‌اش تتا n است.' },
+  ]}
+/>
+
+<Callout type="warning" title="دام نمادگذاری">
+  میانگین دقیقاً <Formula inline latex={"(n+1)/2"} /> است و مرتبه‌اش <Formula inline latex={"\\Theta(n)"} /> می‌شود. نوشتن <Formula inline latex={"O((n+1)/2)"} /> اشتباه است: اوی بزرگ شکلِ ساده‌شدهٔ رشد را می‌خواهد.
+</Callout>

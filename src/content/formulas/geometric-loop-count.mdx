@@ -1,0 +1,31 @@
+---
+type: formula
+title: شمارش حلقهٔ لگاریتمی
+name: "حلقهٔ هندسی (Geometric Loop Count)"
+description: "تعداد اجرای حلقه‌ای که شمارنده‌اش در k ضرب می‌شود: کف لگاریتم به‌علاوهٔ یک."
+section: foundations
+difficulty: intermediate
+order: 4
+estimatedMinutes: 6
+tags: [حلقه, لگاریتم, تحلیل الگوریتم]
+latex: "C = \\lfloor \\log_k(b/a) \\rfloor + 1"
+conditions:
+  - "شروع a باید حداقل ۱ باشد (در ۱ ضرب ماندن، حلقهٔ بی‌نهایت می‌سازد)."
+  - "ضریب k باید حداقل ۲ باشد."
+  - "کران بالا شامل است (شرط i کوچک‌ترمساوی b)."
+---
+
+حلقه‌ای که شمارنده‌اش هر بار در عدد ثابتی ضرب می‌شود:
+
+```
+for (i = a; i <= b; i *= k)
+```
+
+<Formula
+  id="geometric-loop-count"
+  latex={"C(a, b, k) = \\lfloor \\log_k(b/a) \\rfloor + 1 \\qquad (a \\geq 1,\\ k \\geq 2)"}
+  caption="تعداد اجرای حلقهٔ لگاریتمی"
+  usage="از ۱ تا ۱۰۰ با ضربدر ۲ می‌شود ۷ بار: ۱، ۲، ۴، ۸، ۱۶، ۳۲، ۶۴."
+/>
+
+مقادیر شمارنده تصاعد هندسی‌اند: <Formula inline latex={"a,\\ ak,\\ ak^2,\\ \\ldots"} />. شرط ادامه <Formula inline latex={"ak^e \\leq b"} /> است، یعنی <Formula inline latex={"e \\leq \\log_k(b/a)"} />. پس بزرگ‌ترین توانِ مجاز کفِ لگاریتم است و به‌علاوهٔ یک (برای خودِ <Formula inline latex={"e = 0"} />) تعداد اجراهاست.

@@ -1,0 +1,148 @@
+---
+type: lesson
+title: نمادهای مجانبی
+description: "اوی بزرگ و امگا بزرگ و تتا با تعریف رسمی و معنای نموداری و اثبات قدم‌به‌قدم n مربع به‌علاوهٔ 10n."
+section: foundations
+difficulty: intermediate
+order: 7
+estimatedMinutes: 18
+objective: بتوانید با معرفی c و n صفر ثابت کنید یک تابع در O یا Ω یا Θ یک رشد مشخص است.
+tags: [تحلیل الگوریتم]
+prerequisites: [growth-rate-hierarchy]
+concepts: [big-o, big-omega, big-theta]
+formulas: [big-o-definition, big-omega-definition, big-theta-definition, bubble-sort-theta]
+---
+
+این درس گرامرِ رسمیِ همهٔ حرف‌های قبلی است. تا اینجا گفتی «حباب درجه دو است»؛ حالا یاد می‌گیری چطور این را ثابت کنی.
+
+<Prerequisite ids={["growth-rate-hierarchy"]} />
+
+## اوی بزرگ: سقف
+
+اوی بزرگ (Big-O) کران بالا می‌دهد.
+
+<Formula
+  id="big-o"
+  latex={"f(n) \\in O(g(n)) \\iff \\exists c > 0,\\ n_0 \\geq 0:\\ \\forall n \\geq n_0,\\ f(n) \\leq c \\cdot g(n)"}
+  caption="تعریف رسمی اوی بزرگ"
+/>
+
+روی نمودار یعنی از <Formula inline latex={"n_0"} /> به بعد، منحنی <Formula inline latex={"f"} /> زیر سقفِ <Formula inline latex={"c \\cdot g"} /> می‌ماند.
+
+## امگا بزرگ: کف
+
+امگا بزرگ (Big-Omega) کران پایین می‌دهد: همان تعریف با نامساوی معکوس.
+
+<Formula
+  id="big-omega"
+  latex={"f(n) \\in \\Omega(g(n)) \\iff \\exists c > 0,\\ n_0 \\geq 0:\\ \\forall n \\geq n_0,\\ f(n) \\geq c \\cdot g(n)"}
+  caption="تعریف رسمی امگا بزرگ"
+/>
+
+## تتا: هر دو با هم
+
+تتا (Big-Theta) اشتراکِ این دو است: رشد دقیق.
+
+<Formula
+  id="big-theta"
+  latex={"f(n) \\in \\Theta(g(n)) \\iff f(n) \\in O(g(n)) \\land f(n) \\in \\Omega(g(n))"}
+  caption="تعریف رسمی تتا"
+/>
+
+## اثبات نمونه: n مربع به‌علاوهٔ 10n
+
+<WorkedExample
+  title="اثبات او و امگای n مربع به‌علاوهٔ 10n"
+  problem="ثابت کنید f(n) مساوی n مربع به‌علاوهٔ 10n هم در O(n مربع) است و هم در امگای n مربع."
+  difficulty="intermediate"
+  steps={[
+    {
+      title: 'گام ۱ — جهت او با c مساوی ۲ و n صفر مساوی ۱۰',
+      content: 'برای nهای بزرگ‌ترمساوی ۱۰ داریم 10n کوچک‌ترمساوی n مربع، پس جمع زیر دو برابر n مربع می‌ماند.',
+      latex: 'n \\geq 10 \\Rightarrow n^2 + 10n \\leq 2n^2'
+    },
+    {
+      title: 'گام ۲ — جهت امگا با c مساوی ۱ و n صفر مساوی ۰',
+      content: 'چون 10n نامنفی است، حذفش جمع را کوچک‌تر نمی‌کند.',
+      latex: 'n \\geq 0 \\Rightarrow n^2 + 10n \\geq 1 \\cdot n^2'
+    },
+    {
+      title: 'گام ۳ — تتا',
+      content: 'هر دو جهت برقرار است، پس f از مرتبهٔ دقیق تتای n مربع است. بررسی ماشینی نامساوی‌ها را تا n مساوی ۵۰۰۰ تأیید می‌کند.'
+    },
+  ]}
+/>
+
+و برای حباب: <Formula inline latex={"T(n) = n(n-1)/2"} /> با سقفِ <Formula inline latex={"c_2 = 1/2"} /> و کفِ <Formula inline latex={"c_1 = 1/4"} /> در <Formula inline latex={"\\Theta(n^2)"} /> است.
+
+<Confused prerequisites={["big-o", "big-theta-definition"]} retry="فقط یک جهت را با عدد امتحان کن: n مساوی ۱۰ بگذار و هر دو طرف نامساوی را حساب کن">
+  اگر c و n صفر انتزاعی‌اند، آن‌ها را تنظیمات سقف بدان: n مساوی ۱۰ بگذار و ببین با c مساوی ۲ نامساوی برقرار است یا نه.
+</Confused>
+
+## جمع‌بندی
+
+در این درس دیدی که:
+
+1. اوی بزرگ سقف است، امگا بزرگ کف است، تتا هر دو با هم است.
+2. اثبات یعنی معرفی <Formula inline latex={"c"} /> و <Formula inline latex={"n_0"} /> و چک‌کردن نامساوی.
+3. حباب دقیقاً از مرتبهٔ تتای <Formula inline latex={"n^2"} /> است.
+
+## خودتان را بسنجید
+
+<Quiz
+  id="quiz-asymptotic-notation"
+  title="سنجش فهم — نمادهای مجانبی"
+  questions={[
+    {
+      id: 'q1',
+      type: 'multiple-choice',
+      text: 'کدام گزینه معنای f در O(g) است؟',
+      options: [
+        { id: 'a', text: 'از جایی به بعد f زیر سقف c برابر g می‌ماند' },
+        { id: 'b', text: 'f همیشه دقیقاً برابر g است' },
+        { id: 'c', text: 'f از g بزرگ‌تر است' },
+      ],
+      correctAnswer: 'a',
+      explanation: 'تعریف رسمی: عددهای c و n صفری هستند که برای همهٔ nهای بزرگ‌تر، f کوچک‌ترمساوی c برابر g باشد.'
+    },
+    {
+      id: 'q2',
+      type: 'numeric',
+      text: 'در اثبات n مربع به‌علاوهٔ 10n در O با c مساوی ۲، کوچک‌ترین n صفر استاندارد چند است؟ (فقط عدد بنویسید)',
+      numericAnswer: 10,
+      tolerance: 0,
+      explanation: 'برای n بزرگ‌ترمساوی ۱۰ داریم 10n کوچک‌ترمساوی n مربع، پس جمع زیر 2n مربع می‌ماند.'
+    },
+    {
+      id: 'q3',
+      type: 'true-false',
+      text: 'تتا اشتراک اوی بزرگ و امگا بزرگ است.',
+      options: [
+        { id: 'true', text: 'درست' },
+        { id: 'false', text: 'نادرست' },
+      ],
+      correctAnswer: 'true',
+      explanation: 'تتا یعنی هم سقف (O) و هم کف (Ω)؛ هر دو که باشند رشد دقیق قاب شده است.'
+    },
+    {
+      id: 'q4',
+      type: 'multiple-choice',
+      text: 'مرتبهٔ دقیق T(n) مساوی n در n منهای ۱ دوم چیست؟',
+      options: [
+        { id: 'a', text: 'تتای n' },
+        { id: 'b', text: 'تتای n مربع' },
+        { id: 'c', text: 'تتای ۲ به‌توان n' },
+      ],
+      correctAnswer: 'b',
+      explanation: 'با سقف یک‌دوم و کف یک‌چهارم (برای n بزرگ‌ترمساوی ۲) ثابت می‌شود که در تتای n مربع است.'
+    },
+    {
+      id: 'q5',
+      type: 'numeric',
+      text: 'در کف حباب با c مساوی یک‌چهارم، مخرج کسر c ضربدر چند است؟ (۱/۴ یعنی ۱ تقسیم بر ۴ — فقط عدد ۴ را بنویسید)',
+      numericAnswer: 4,
+      tolerance: 0,
+      explanation: 'کف n مربع چهارم است: n در n منهای ۱ دوم بزرگ‌ترمساوی n مربع چهارم.'
+    },
+  ]}
+/>

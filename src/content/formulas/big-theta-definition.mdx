@@ -1,0 +1,26 @@
+---
+type: formula
+title: تعریف تتا
+name: "تعریف تتا (Big-Theta Definition)"
+description: "تعریف رسمی تتا: اشتراک اوی بزرگ و امگا بزرگ؛ f در Θ(g) یعنی رشد دقیقاً g."
+section: foundations
+difficulty: intermediate
+order: 9
+estimatedMinutes: 5
+tags: [تحلیل الگوریتم]
+latex: "f(n) \\in \\Theta(g(n)) \\iff f(n) \\in O(g(n)) \\land f(n) \\in \\Omega(g(n))"
+concepts: [big-theta]
+---
+
+## تعریف رسمی
+
+<Formula
+  id="big-theta-definition"
+  latex={"f(n) \\in \\Theta(g(n)) \\iff f(n) \\in O(g(n)) \\land f(n) \\in \\Omega(g(n))"}
+  caption="تعریف رسمی تتا"
+  usage="برای اثبات تتا، هر دو جهت را جدا ثابت کن: یک جفت (c و n صفر) برای سقف و یک جفت برای کف."
+/>
+
+<Callout type="tip" title="فرم معادل">
+  بعضی کتاب‌ها تتا را با دو ثابت می‌نویسند: <Formula inline latex={"c_1 \\cdot g(n) \\leq f(n) \\leq c_2 \\cdot g(n)"} /> برای همهٔ <Formula inline latex={"n \\geq n_0"} />. هر دو فرم یکی‌اند.
+</Callout>
