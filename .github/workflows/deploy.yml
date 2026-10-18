@@ -52,7 +52,7 @@ jobs:
       - name: Validate built output
         run: node scripts/validate-content.mjs --links
 
-      - uses: actions/configure-pages@983d7736d9b0ae728b421d210d371e7cf54d78fd # v5.0.0
+      - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
 
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v4.0.0
         with:
@@ -67,4 +67,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@6f6482b73b69815bb3def249e8e2d92ab64db9be # v4.0.0
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.0
