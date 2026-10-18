@@ -1,0 +1,49 @@
+---
+type: formula
+title: تعریف آکرمن
+name: "تعریف آکرمن (Ackermann Definition)"
+description: "تابع آکرمن با سه حالت: حالت صفر و حالت حاشیه و حالت تودرتو، با نقطهٔ شروع آک ۱ و ۱ مساوی ۳."
+section: recursion
+difficulty: advanced
+order: 3
+estimatedMinutes: 8
+tags: [بازگشت]
+latex: "A(0,n) = n+1,\\quad A(m,0) = A(m-1,1),\\quad A(m,n) = A(m-1,A(m,n-1))"
+concepts: [recursive-function]
+conditions:
+  - "ورودی‌ها باید عددهای صحیح نامنفی باشند."
+  - "حالت‌ها به همین ترتیب چک می‌شوند: اول m مساوی صفر، بعد n مساوی صفر."
+---
+
+ ## سه حالتِ تودرتو
+
+ <Formula
+   id="ackermann-definition"
+   latex={"A(0,n) = n+1"}
+   caption="حالت پایهٔ آکرمن"
+   usage="بدون فراخوانی تودرتو؛ فقط یکی اضافه کن."
+ />
+
+ <Formula
+   id="ackermann-edge"
+   latex={"A(m,0) = A(m-1,1)"}
+   caption="حالت حاشیهٔ آکرمن"
+   usage="ستون صفر را به ستون یکِ ردیف قبل وصل می‌کند."
+ />
+
+ <Formula
+   id="ackermann-nested"
+   latex={"A(m,n) = A(m-1,A(m,n-1))"}
+   caption="حالت تودرتوی آکرمن"
+   usage="کوچک‌ترین نقطهٔ غیربدیهی: آک ۱ و ۱ مساوی ۳."
+ />
+ترتیب حالت‌ها مهم است: اگر <Formula inline latex={"m = 0"} /> بود همان حالت اول جواب می‌دهد و سراغ بقیه نمی‌روی. اگر <Formula inline latex={"m > 0"} /> و <Formula inline latex={"n = 0"} /> بود حالت دوم. وگرنه حالت سوم که خودش دو فراخوانیِ تودرتو دارد: اول درونیِ <Formula inline latex={"A(m,n-1)"} /> حساب می‌شود، بعد نتیجه‌اش می‌شود ورودیِ بیرونی.
+
+<FormulaBreakdown
+  title="اجزای فرمول"
+  terms={[
+    { term: "A(0,n) = n+1", label: 'حالت پایه', detail: 'بدون فراخوانی تودرتو؛ فقط یکی اضافه کن.' },
+    { term: "A(m,0) = A(m-1,1)", label: 'حالت حاشیه', detail: 'ستون صفر را به ستون یکِ ردیف قبل وصل می‌کند.' },
+    { term: "A(m-1,A(m,n-1))", label: 'حالت تودرتو', detail: 'نتیجهٔ یک فراخوانی، ورودیِ فراخوانی بعدی می‌شود؛ همین رشد انفجاری می‌سازد.' },
+  ]}
+/>

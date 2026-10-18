@@ -1,0 +1,27 @@
+---
+type: formula
+title: رابطهٔ بازگشتی توان
+name: "رابطهٔ بازگشتی توان (Power Recurrence)"
+description: "توان با بازگشت: حالت پایه a به‌توان صفر مساوی ۱ و شاخهٔ a در توان n منهای ۱ برای n بزرگ‌ترمساوی ۱."
+section: recursion
+difficulty: beginner
+order: 5
+estimatedMinutes: 5
+tags: [بازگشت]
+latex: "P(a,0) = 1,\\quad P(a,n) = a \\cdot P(a,n-1)\\ \\ (n \\geq 1)"
+concepts: [base-case]
+conditions:
+  - "نما باید عدد صحیح نامنفی باشد."
+  - "شاخهٔ بازگشتی فقط برای n بزرگ‌ترمساوی ۱ معتبر است."
+---
+
+## توان یعنی ضربِ تکراریِ بازگشتی
+
+<Formula
+  id="power-recurrence"
+  latex={"P(a,0) = 1,\\quad P(a,n) = a \\cdot P(a,n-1)\\ \\ (n \\geq 1)"}
+  caption="رابطهٔ بازگشتی توان"
+  usage="برای ۲ به‌توان ۵ می‌شود ۳۲؛ پنج بار ضرب در ۲ روی زنجیرهٔ فراخوانی‌ها."
+/>
+
+حالت پایه از قرارداد ریاضی می‌آید: هر عدد به‌توان صفر ۱ است. شاخهٔ بازگشتی یک نسخه از <Formula inline latex={"a"} /> را جدا می‌کند و بقیه را به فراخوانی کوچک‌تر می‌سپارد. برای مثال <Formula inline latex={"P(2,5) = 2 \\cdot P(2,4) = 2 \\cdot 2 \\cdot P(2,3) = \\cdots = 32"} />.

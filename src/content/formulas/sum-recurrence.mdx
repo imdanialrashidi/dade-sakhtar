@@ -1,0 +1,27 @@
+---
+type: formula
+title: رابطهٔ بازگشتی جمع
+name: "رابطهٔ بازگشتی جمع (Sum Recurrence)"
+description: "جمع صفر تا n با بازگشت: حالت پایه صفر و شاخهٔ n به‌علاوهٔ جمع n منهای ۱ برای n بزرگ‌ترمساوی ۱."
+section: recursion
+difficulty: beginner
+order: 4
+estimatedMinutes: 5
+tags: [بازگشت]
+latex: "S(0) = 0,\\quad S(n) = n + S(n-1)\\ \\ (n \\geq 1)"
+concepts: [base-case]
+conditions:
+  - "ورودی n باید عدد صحیح نامنفی باشد."
+  - "شاخهٔ بازگشتی فقط برای n بزرگ‌ترمساوی ۱ معتبر است."
+---
+
+## جمع با یک سطر بازگشت
+
+<Formula
+  id="sum-recurrence"
+  latex={"S(0) = 0,\\quad S(n) = n + S(n-1)\\ \\ (n \\geq 1)"}
+  caption="رابطهٔ بازگشتی جمع صفر تا n"
+  usage="برای n مساوی ۵ می‌شود ۱۵؛ معادل بسته‌اش n در n به‌علاوهٔ ۱ دوم است."
+/>
+
+حالت پایه صفر است چون جمعِ هیچ‌چیز تهی است. شاخهٔ بازگشتی عدد آخر را جدا می‌کند و بقیه را به فراخوانی کوچک‌تر می‌سپارد. بازکردنش می‌دهد <Formula inline latex={"S(n) = n + (n-1) + \\cdots + 1 + 0"} />، یعنی همان جمع حسابیِ <Formula inline latex={"n(n+1)/2"} />.

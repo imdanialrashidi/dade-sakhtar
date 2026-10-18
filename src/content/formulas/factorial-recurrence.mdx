@@ -1,0 +1,36 @@
+---
+type: formula
+title: رابطهٔ بازگشتی فاکتوریل
+name: "رابطهٔ بازگشتی فاکتوریل (Factorial Recurrence)"
+description: "تعریف بازگشتی فاکتوریل: حالت پایه f صفر مساوی ۱ و حالت بازگشتی n در f ان منهای ۱."
+section: recursion
+difficulty: beginner
+order: 1
+estimatedMinutes: 6
+tags: [بازگشت]
+latex: "f(0) = 1,\\quad f(n) = n \\cdot f(n-1)\\ \\ (n \\geq 1)"
+concepts: [recursive-function]
+conditions:
+  - "ورودی n باید عدد صحیح نامنفی باشد."
+  - "شاخهٔ بازگشتی فقط برای n بزرگ‌ترمساوی ۱ اجرا می‌شود."
+---
+
+## تعریف بازگشتی فاکتوریل
+
+<Formula
+  id="factorial-recurrence"
+  latex={"f(0) = 1,\\quad f(n) = n \\cdot f(n-1)\\ \\ (n \\geq 1)"}
+  caption="رابطهٔ بازگشتی فاکتوریل"
+  usage="برای n مساوی ۵ می‌شود ۱۲۰؛ ردیابی کاملش را در مثال حل‌شده ببین."
+/>
+
+<FormulaBreakdown
+  title="اجزای فرمول"
+  terms={[
+    { term: "f(0) = 1", label: 'حالت پایه', detail: 'بدون فراخوانی برمی‌گردد؛ ترمز زنجیره است.' },
+    { term: "n \\cdot f(n-1)", label: 'حالت بازگشتی', detail: 'مسئله را یکی کوچک می‌کند و جواب را با n ترکیب می‌کند.' },
+    { term: "n \\geq 1", label: 'دامنهٔ شاخه', detail: 'شاخهٔ بازگشتی فقط برای nهای مثبت معتبر است.' },
+  ]}
+/>
+
+همین دو سطر، معادل حلقه‌ای است که از ۱ تا n ضرب می‌کند؛ ولی به‌جای شمارنده، فراخوانی‌ها کار را پیش می‌برند.

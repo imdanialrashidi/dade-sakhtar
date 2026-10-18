@@ -65,21 +65,25 @@ const VIEWPORTS = [
   { name: '1360', width: 1360, height: 900 },
 ];
 
-const ROUTES = [
-  { name: 'home', path: '/' },
-  { name: 'lessons', path: '/lessons' },
-  { name: 'lesson', path: '/lessons/what-is-an-algorithm' },
-  { name: 'concepts', path: '/concepts' },
-  { name: 'concept', path: '/concepts/algorithm' },
-  { name: 'formulas', path: '/formulas' },
-  { name: 'formula', path: '/formulas/sequential-search-counts' },
-  { name: 'example', path: '/examples/swap-two-variables' },
-  { name: 'practice', path: '/practice/practice-foundations' },
-  { name: 'glossary', path: '/glossary' },
-  { name: 'search', path: '/search' },
-  { name: 'map', path: '/map' },
-  { name: '404', path: '/404' },
-];
+ const ROUTES = [
+   { name: 'home', path: '/' },
+   { name: 'lessons', path: '/lessons' },
+   { name: 'lesson', path: '/lessons/what-is-an-algorithm' },
+   { name: 'lesson-recursion', path: '/lessons/recursion-and-factorial' },
+   { name: 'lesson-classics', path: '/lessons/classic-recursive-definitions' },
+   { name: 'concepts', path: '/concepts' },
+   { name: 'concept', path: '/concepts/algorithm' },
+   { name: 'formulas', path: '/formulas' },
+   { name: 'formula', path: '/formulas/sequential-search-counts' },
+   { name: 'example', path: '/examples/swap-two-variables' },
+   { name: 'example-recursion', path: '/examples/factorial-trace' },
+   { name: 'practice', path: '/practice/practice-foundations' },
+   { name: 'practice-recursion', path: '/practice/practice-recursion' },
+   { name: 'glossary', path: '/glossary' },
+   { name: 'search', path: '/search' },
+   { name: 'map', path: '/map' },
+   { name: '404', path: '/404' },
+ ];
 
 /**
  * A TeX command appearing as literal page text means an escaping step ate its

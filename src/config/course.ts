@@ -46,6 +46,12 @@ export const courseConfig: CourseConfig = {
       description: 'تعریف الگوریتم و ساختمان داده، مقایسه الگوریتم‌ها و تحلیل مرتبه',
       order: 1,
     },
+    {
+      id: 'recursion',
+      title: 'بازگشت',
+      description: 'توابع بازگشتی، درخت بازگشت، شمارش عملیات و تعریف‌های کلاسیک',
+      order: 2,
+    },
   ],
 
   // --- Course-specific theming ---
