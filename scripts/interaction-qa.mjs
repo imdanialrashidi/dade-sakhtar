@@ -9,20 +9,47 @@
  * Usage: node scripts/interaction-qa.mjs [--base http://localhost:4321]
  */
 import { chromium } from 'playwright-core';
+import { execSync } from 'node:child_process';
 import { existsSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 
 function resolveChromium() {
-  if (process.env.PLAYWRIGHT_CHROMIUM) return process.env.PLAYWRIGHT_CHROMIUM;
+  if (process.env.PLAYWRIGHT_CHROMIUM && existsSync(process.env.PLAYWRIGHT_CHROMIUM)) {
+    return process.env.PLAYWRIGHT_CHROMIUM;
+  }
+
   const cacheRoot = process.env.PLAYWRIGHT_BROWSERS_PATH || path.join(os.homedir(), '.cache', 'ms-playwright');
-  for (const dir of readdirSync(cacheRoot).filter((e) => e.startsWith('chromium-')).sort().reverse()) {
-    for (const rel of ['chrome-linux64/chrome', 'chrome-linux/chrome']) {
-      const full = path.join(cacheRoot, dir, rel);
-      if (existsSync(full)) return full;
+  if (existsSync(cacheRoot)) {
+    const candidates = readdirSync(cacheRoot)
+      .filter((entry) => entry.startsWith('chromium-') || entry.startsWith('chromium_headless_shell-'))
+      .sort()
+      .reverse();
+    for (const dir of candidates) {
+      for (const rel of ['chrome-linux64/chrome', 'chrome-linux/chrome', 'chrome-linux/headless_shell']) {
+        const full = path.join(cacheRoot, dir, rel);
+        if (existsSync(full)) return full;
+      }
     }
   }
-  throw new Error('No Chromium found; set PLAYWRIGHT_CHROMIUM.');
+
+  for (const system of ['/usr/bin/chromium', '/usr/bin/chromium-browser', '/usr/bin/google-chrome']) {
+    if (existsSync(system)) return system;
+  }
+
+  // Last resort: first browser binary on PATH (covers user-local installs).
+  for (const name of ['chromium', 'chromium-browser', 'google-chrome', 'google-chrome-stable']) {
+    try {
+      const found = execSync('command -v ' + name, { encoding: 'utf8' }).trim().split('\n')[0];
+      if (found && existsSync(found)) return found;
+    } catch {
+      /* not on PATH */
+    }
+  }
+
+  throw new Error(
+    'No Chromium binary found. Set PLAYWRIGHT_CHROMIUM=/path/to/chrome or run `npx playwright install chromium`.',
+  );
 }
 
 const baseArgIndex = process.argv.indexOf('--base');
@@ -113,6 +140,64 @@ const browser = await chromium.launch({ headless: true, executablePath: resolveC
   await context.close();
 }
 
+/* ── Quiz island: recursion slice ──────────────────────────────────────────── */
+{
+  const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: 'fa-IR' });
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+
+  await page.goto(`${base}/practice/practice-recursion`, { waitUntil: 'networkidle' });
+
+  const quiz = page.locator('section[aria-labelledby$="-title"]').first();
+  await quiz.waitFor({ state: 'visible', timeout: 10000 });
+  await page.waitForFunction(() => document.documentElement.dataset.quizHydrated === 'true', null, {
+    timeout: 10000,
+  });
+  check('quiz-rec: island actually hydrated', true);
+
+  const submit = quiz.getByRole('button', { name: 'بررسی پاسخ‌ها' });
+  check('quiz-rec: submit disabled before answering', await submit.isDisabled());
+
+  // Independent oracle: practice-recursion answers q1=a, q2=24, q3=b,
+  // q4=8, q5=3, q6=6, q7=false.
+  const questions = quiz.locator('ol > li');
+  await questions.nth(0).locator('label:has(input[value="a"])').click();
+  await questions.nth(1).locator('input[type="text"]').fill('24');
+  await questions.nth(2).locator('label:has(input[value="b"])').click();
+  await questions.nth(3).locator('input[type="text"]').fill('۸');
+  await questions.nth(4).locator('input[type="text"]').fill('3');
+  await questions.nth(5).locator('input[type="text"]').fill('6');
+  await questions.nth(6).locator('label:has(input[value="false"])').click();
+  check('quiz-rec: submit enabled after answering all', await submit.isEnabled());
+  await submit.click();
+  await page.waitForTimeout(200);
+
+  const status = await quiz.locator('footer').getByRole('status').innerText();
+  check('quiz-rec: grades a fully-correct run as ۱۰۰٪', status.includes('۱۰۰٪'), status.trim());
+
+  await quiz.getByRole('button', { name: 'تلاش دوباره' }).click();
+  await page.waitForTimeout(150);
+  check('quiz-rec: retry resets to unanswered', await submit.isDisabled());
+
+  check('quiz-rec: no uncaught page errors', errors.length === 0, errors.join(' | '));
+
+  // Score must survive a reload through the progress store.
+  await questions.nth(0).locator('label:has(input[value="a"])').click();
+  await questions.nth(1).locator('input[type="text"]').fill('24');
+  await questions.nth(2).locator('label:has(input[value="b"])').click();
+  await questions.nth(3).locator('input[type="text"]').fill('8');
+  await questions.nth(4).locator('input[type="text"]').fill('3');
+  await questions.nth(5).locator('input[type="text"]').fill('6');
+  await questions.nth(6).locator('label:has(input[value="false"])').click();
+  await submit.click();
+  await page.waitForTimeout(200);
+  await page.reload({ waitUntil: 'networkidle' });
+  const stored = await page.evaluate(() => localStorage.getItem('dr-study-progress:v1'));
+  check('quiz-rec: score persisted to localStorage', Boolean(stored && stored.includes('practice-recursion')));
+  await context.close();
+}
+
 /* ── StepReveal island ───────────────────────────────────────────────────── */
 {
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: 'fa-IR' });
@@ -144,6 +229,48 @@ const browser = await chromium.launch({ headless: true, executablePath: resolveC
   await reveal.getByRole('button', { name: 'از ابتدا' }).click();
   await page.waitForTimeout(150);
   check('reveal: reset hides steps again', (await steps.count()) === 0, `${await steps.count()} steps`);
+  await context.close();
+}
+
+/* ── StepReveal island: recursion slice ────────────────────────────────────── */
+{
+  const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: 'fa-IR' });
+  const page = await context.newPage();
+
+  // Lesson with an inline WorkedExample (3 steps).
+  await page.goto(`${base}/lessons/recursion-and-factorial`, { waitUntil: 'networkidle' });
+  const reveal = page.locator('section[aria-label="راه‌حل گام‌به‌گام"]').first();
+  await reveal.scrollIntoViewIfNeeded();
+  await reveal.waitFor({ state: 'visible', timeout: 10000 });
+  await page.waitForFunction(() => document.documentElement.dataset.stepRevealHydrated === 'true', null, {
+    timeout: 10000,
+  });
+  check('reveal-rec: lesson island hydrated', true);
+  const lessonSteps = reveal.locator('ol > li');
+  await reveal.getByRole('button', { name: 'همهٔ گام‌ها' }).click();
+  await page.waitForTimeout(200);
+  check('reveal-rec: lesson "all" reveals every step', (await lessonSteps.count()) === 3, `${await lessonSteps.count()} steps`);
+  check(
+    'reveal-rec: lesson math is pre-rendered static HTML',
+    (await lessonSteps.locator('.katex').count()) >= 3,
+    `${await lessonSteps.locator('.katex').count()} katex blocks`,
+  );
+  await reveal.getByRole('button', { name: 'از ابتدا' }).click();
+  await page.waitForTimeout(150);
+  check('reveal-rec: lesson reset hides steps again', (await lessonSteps.count()) === 0, `${await lessonSteps.count()} steps`);
+
+  // Standalone example (3 steps).
+  await page.goto(`${base}/examples/factorial-trace`, { waitUntil: 'networkidle' });
+  const exampleReveal = page.locator('section[aria-label="راه‌حل گام‌به‌گام"]').first();
+  await exampleReveal.scrollIntoViewIfNeeded();
+  await exampleReveal.waitFor({ state: 'visible', timeout: 10000 });
+  const exampleSteps = exampleReveal.locator('ol > li');
+  await exampleReveal.getByRole('button', { name: 'همهٔ گام‌ها' }).click();
+  await page.waitForTimeout(200);
+  check('reveal-rec: example "all" reveals every step', (await exampleSteps.count()) === 3, `${await exampleSteps.count()} steps`);
+  await exampleReveal.getByRole('button', { name: 'از ابتدا' }).click();
+  await page.waitForTimeout(150);
+  check('reveal-rec: example reset hides steps again', (await exampleSteps.count()) === 0, `${await exampleSteps.count()} steps`);
   await context.close();
 }
 

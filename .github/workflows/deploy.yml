@@ -1,13 +1,13 @@
 # Minimal static deployment for GitHub Pages (project sites under /<repo>/).
 #
-# Node 22 is the version this template is developed and verified against.
-# Pages runs `npm ci` + `npm run build` from the repository root and publishes
-# the `dist/` artifact. BASE_PATH is derived from the repository name so the
-# same source also works on Cloudflare Pages without editing any file.
+# Custom-domain deployments (e.g. https://dade-sakhtar.danialrashidi.ir):
+# a `public/CNAME` file in this repo pins the domain on every deploy, and the
+# two repository variables below switch the build from project-site paths to
+# root paths. Set both once in Settings → Variables → Actions:
+#   DEPLOY_BASE = /
+#   SITE_URL    = https://dade-sakhtar.danialrashidi.ir
 #
-# For a user/organisation site (https://<owner>.github.io) set the
-# `DEPLOY_BASE` repository variable to "/" in the repository settings.
-
+# Node 22 is the version this template is developed and verified against.
 name: deploy
 
 on:

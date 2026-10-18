@@ -69,16 +69,31 @@ const VIEWPORTS = [
    { name: 'home', path: '/' },
    { name: 'lessons', path: '/lessons' },
    { name: 'lesson', path: '/lessons/what-is-an-algorithm' },
-   { name: 'lesson-recursion', path: '/lessons/recursion-and-factorial' },
-   { name: 'lesson-classics', path: '/lessons/classic-recursive-definitions' },
-   { name: 'concepts', path: '/concepts' },
-   { name: 'concept', path: '/concepts/algorithm' },
-   { name: 'formulas', path: '/formulas' },
-   { name: 'formula', path: '/formulas/sequential-search-counts' },
-   { name: 'example', path: '/examples/swap-two-variables' },
-   { name: 'example-recursion', path: '/examples/factorial-trace' },
-   { name: 'practice', path: '/practice/practice-foundations' },
-   { name: 'practice-recursion', path: '/practice/practice-recursion' },
+  { name: 'lesson-recursion', path: '/lessons/recursion-and-factorial' },
+  { name: 'lesson-recursion-tree', path: '/lessons/recursion-tree-growth' },
+  { name: 'lesson-recursion-count', path: '/lessons/counting-recursive-operations' },
+  { name: 'lesson-ackermann', path: '/lessons/ackermann-function' },
+  { name: 'lesson-classics', path: '/lessons/classic-recursive-definitions' },
+  { name: 'concepts', path: '/concepts' },
+  { name: 'concept', path: '/concepts/algorithm' },
+  { name: 'concept-recursion', path: '/concepts/recursive-function' },
+  { name: 'concept-base-case', path: '/concepts/base-case' },
+  { name: 'formulas', path: '/formulas' },
+  { name: 'formula', path: '/formulas/sequential-search-counts' },
+  { name: 'formula-factorial', path: '/formulas/factorial-recurrence' },
+  { name: 'formula-doubling', path: '/formulas/doubling-recurrence' },
+  { name: 'formula-sum', path: '/formulas/sum-recurrence' },
+  { name: 'formula-power', path: '/formulas/power-recurrence' },
+  { name: 'formula-binomial', path: '/formulas/binomial-pascal-rule' },
+  { name: 'formula-ackermann', path: '/formulas/ackermann-definition' },
+  { name: 'example', path: '/examples/swap-two-variables' },
+  { name: 'example-recursion', path: '/examples/factorial-trace' },
+  { name: 'example-recursion-tree', path: '/examples/recursion-tree-trace' },
+  { name: 'example-recursion-mult', path: '/examples/recursive-multiplication-count' },
+  { name: 'example-ackermann', path: '/examples/ackermann-trace' },
+  { name: 'example-binomial', path: '/examples/binomial-coefficient-trace' },
+  { name: 'practice', path: '/practice/practice-foundations' },
+  { name: 'practice-recursion', path: '/practice/practice-recursion' },
    { name: 'glossary', path: '/glossary' },
    { name: 'search', path: '/search' },
    { name: 'map', path: '/map' },
@@ -118,8 +133,20 @@ const PROBE = () => {
     if (rect.right > vw + 1 || rect.left < -1) {
       const style = getComputedStyle(el);
       // Elements that scroll internally are fine; only page-level overflow is not.
+      // Same for elements inside a scrollable ancestor (formula plates,
+      // StepReveal blocks): inner KaTeX spans legitimately exceed the viewport
+      // while the plate itself scrolls, so the page never breaks.
       const scrolls = /auto|scroll|hidden/.test(style.overflowX);
-      if (!scrolls) {
+      let ancestor = el.parentElement;
+      let insideScroll = false;
+      while (ancestor && ancestor !== document.body) {
+        if (/auto|scroll|hidden/.test(getComputedStyle(ancestor).overflowX)) {
+          insideScroll = true;
+          break;
+        }
+        ancestor = ancestor.parentElement;
+      }
+      if (!scrolls && !insideScroll) {
         overflowing.push({
           tag: el.tagName.toLowerCase(),
           cls: (el.className?.baseVal ?? el.className ?? '').toString().slice(0, 90),

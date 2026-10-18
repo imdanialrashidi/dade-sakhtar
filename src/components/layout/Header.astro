@@ -52,7 +52,7 @@ const isActive = (href: string) => {
          lives in the footer, homepage creator block, and about page. -->
     <a
       href={withBase('/')}
-      class="group flex min-w-0 shrink-0 items-center gap-2.5"
+      class="group flex min-w-0 flex-1 items-center gap-2.5 lg:flex-none"
       aria-label={`صفحهٔ اصلی — ${courseConfig.title}`}
     >
       <span
@@ -95,7 +95,7 @@ const isActive = (href: string) => {
       }
     </nav>
 
-    <div class="ms-auto flex items-center gap-1 lg:ms-0">
+    <div class="ms-auto flex shrink-0 items-center gap-1 lg:ms-0">
       <!-- Search: real link on desktop, opens the search page focus on mobile -->
       {isEnabled('search') && (
       <a
