@@ -77,10 +77,12 @@ int M(int a, int b) {
 برای مثال <Formula inline latex={"M(3,4) = 3 + 3 + 3 + 3 + 0 = 12"} />. همین ایده با تفریق، خارج‌قسمت و باقیمانده می‌دهد: تا وقتی مقسوم از مقسوم‌علیه کوچک‌تر نشده، یکی کم کن و یک واحد به خارج‌قسمت اضافه کن.
 
 ```
-pair Q(int a, int b) {
-  if (a < b) return (0, a);
+#include <utility>
+
+std::pair<int, int> Q(int a, int b) {
+  if (a < b) return {0, a};
   auto [q, r] = Q(a - b, b);
-  return (q + 1, r);
+  return {q + 1, r};
 }
 ```
 
